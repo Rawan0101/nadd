@@ -4,7 +4,7 @@
 
 ### Your trip, blended into a scent from the farms of Saudi Arabia
 
-**[▶ Try the live prototype](https://YOUR-USERNAME.github.io/REPO-NAME/)**
+**[▶ Try the live prototype](https://rawan0101.github.io/nadd/)**
 
 Built to develop tourism in the Kingdom of Saudi Arabia · Submitted to the Tourism Development Fund Hackathon
 
@@ -63,7 +63,7 @@ Farm visits exist, and perfume workshops exist, but no one connects them into on
 
 ## Try the prototype
 
-Open the **[live link](https://YOUR-USERNAME.github.io/REPO-NAME/)** on your phone for the best experience. Suggested path:
+Open the **[live link](https://rawan0101.github.io/nadd/)** on your phone for the best experience. Suggested path:
 
 1. Tap **ابدأ رحلتك** (Start your journey)
 2. Open the scent map and choose a farm
