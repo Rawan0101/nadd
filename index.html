@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1F7A52">
+<title>ند | خلطة رحلتك</title>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=El+Messiri:wght@500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --page:#F4EBDC;--phone:#FFFCF6;--card:#FFFFFF;--ink:#1E2B45;--ink-soft:#5D6880;
+  --green:#1F7A52;--green-mid:#4FAF7C;--green-light:#A6DDBC;--green-wash:#E3F5EA;
+  --rose:#E2607F;--rose-light:#FDE3E9;--sand:#F3E6CC;--line:#EFE3CF;--gold:#E8A33A;
+  --date:#B57A3C;--coffee:#7B4A32;--herb:#4FAF7C;--sea:#2E9BB0;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'Tajawal',sans-serif;color:var(--ink);background:var(--page);
+  background-image:radial-gradient(circle at 12% 15%,#FCE3E9 0,transparent 28%),radial-gradient(circle at 88% 70%,#E3F5EA 0,transparent 30%);
+  display:flex;align-items:center;justify-content:center;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+
+/* device */
+.device{width:390px;height:820px;max-height:calc(100vh - 32px);border-radius:44px;background:#fff;
+  box-shadow:0 30px 60px -30px rgba(120,80,30,.45),0 0 0 1px #EADCC4;overflow:hidden;position:relative}
+@media (max-width:520px){
+  body{display:block;background:var(--phone)}
+  .device{width:100%;height:100vh;height:100dvh;max-height:none;border-radius:0;box-shadow:none}
+}
+.app{position:absolute;inset:0;background:var(--phone);display:flex;flex-direction:column}
+.view{flex:1;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column;scrollbar-width:none}
+.view::-webkit-scrollbar{display:none}
+.view.active{display:flex;animation:in .28s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view.active{animation:none}}
+.pad{padding:16px 18px 20px;display:flex;flex-direction:column;gap:12px}
+.top-safe{padding-top:max(20px,env(safe-area-inset-top))}
+
+/* type & parts */
+.h1{font-family:'El Messiri',sans-serif;font-size:24px;font-weight:700;line-height:1.35}
+.h2{font-family:'El Messiri',sans-serif;font-size:18px;font-weight:700}
+.s{font-size:13px;color:var(--ink-soft);line-height:1.65}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px}
+.btn{background:var(--green);color:#F6F1E7;border:0;border-radius:16px;padding:14px;font-size:15px;font-weight:600;width:100%}
+.btn.rose{background:var(--rose);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);color:var(--ink-soft);background:var(--card)}
+button.chip.on,.chip.on{background:var(--green);border-color:var(--green);color:#F6F1E7}
+.row{display:flex;gap:8px}
+.mini{flex:1;padding:10px 6px;text-align:center;font-size:11px;color:var(--ink-soft)}
+.mini b{display:block;font-size:14px;color:var(--ink);margin-top:2px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:0 0 auto}
+.note{display:flex;gap:8px;align-items:center;font-size:12.5px;padding:10px 12px;border-radius:14px}
+.ai{display:flex;gap:10px;font-size:12.5px;line-height:1.7;background:var(--green-wash);color:var(--green);border-radius:14px;padding:11px 12px}
+.ai svg{flex:0 0 18px;height:18px;margin-top:3px}
+.sticky-bottom{position:sticky;bottom:0;padding:12px 18px 16px;background:linear-gradient(to top,var(--phone) 75%,transparent);margin-top:auto}
+
+/* header bar */
+.bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 4px}
+.iconbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center}
+.iconbtn svg{width:18px;height:18px}
+.floating{position:absolute;z-index:3}
+
+/* tabbar */
+.tabbar{display:flex;justify-content:space-around;padding:8px 6px max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--phone)}
+.tabbar.hidden{display:none}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--ink-soft);background:none;border:0;padding:4px 6px;min-width:56px}
+.tab svg{width:22px;height:22px}
+.tab.on{color:var(--green);font-weight:600}
+
+/* scenes */
+.scene{position:relative;overflow:hidden}
+.scene svg.sc{position:absolute;inset:0;width:100%;height:100%}
+
+/* splash */
+#v-splash{position:relative;background:#E9A9A0}
+#v-splash .logo{position:absolute;top:9%;left:0;right:0;text-align:center;color:#fff;z-index:2}
+#v-splash .logo h1{font-family:'Aref Ruqaa',serif;font-size:112px;line-height:1.05;text-shadow:0 4px 18px rgba(0,0,0,.2)}
+#v-splash .logo p{font-size:16px;margin-top:4px;font-weight:700;text-shadow:0 1px 8px rgba(120,40,20,.45)}
+#v-splash .cta{position:absolute;bottom:calc(max(14px,env(safe-area-inset-bottom)) + 84px);left:24px;right:24px;z-index:2;display:flex;flex-direction:column;gap:10px}
+#v-splash .cta .btn{background:#FFFCF6;color:var(--green)}
+#v-splash .cta .link{background:none;border:0;color:#fff;font-size:13px;text-decoration:underline}
+
+/* home */
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 2px;text-align:center;font-size:11.5px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink)}
+.cat svg{width:22px;height:22px}
+.feature{overflow:hidden;text-align:right;padding:0;color:var(--ink);width:100%}
+.passbar{display:flex;gap:6px}
+.passbar i{flex:1;height:8px;border-radius:4px;background:var(--sand)}
+.farmrow{display:flex;gap:10px;align-items:center;padding:8px;width:100%;text-align:right;color:var(--ink)}
+.thumb{width:72px;height:64px;border-radius:14px;overflow:hidden;position:relative;flex:0 0 auto}
+.thumb svg{position:absolute;inset:0;width:100%;height:100%}
+
+/* map */
+.map{height:360px;border-radius:20px;background:#E3EDE4;position:relative;overflow:hidden}
+.map svg{width:100%;height:100%}
+.pin{cursor:pointer}
+.pin:hover circle.core,.pin.sel circle.core{stroke:#fff;stroke-width:3}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;padding:10px 12px}
+.legend span{display:flex;align-items:center;gap:5px}
+
+/* seasons */
+.season{display:flex;gap:12px;align-items:center;padding:10px}
+.season .ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.season b{font-size:14px}
+.yr{height:6px;border-radius:3px;background:var(--sand);margin-top:7px;position:relative;overflow:hidden}
+.yr i{position:absolute;top:0;bottom:0;border-radius:3px}
+.months{display:flex;justify-content:space-between;font-size:9.5px;color:var(--ink-soft);margin-top:3px}
+
+/* farm */
+.hero{height:280px;flex:0 0 auto}
+.rating{display:flex;align-items:center;gap:4px;font-size:13px}
+.star{color:var(--gold)}
+
+/* stepper */
+.stepper{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+.stepper button{width:36px;height:36px;border-radius:12px;border:1px solid var(--line);background:var(--phone);font-size:20px;color:var(--ink)}
+.dates{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.date{flex:0 0 64px;border:1px solid var(--line);border-radius:14px;padding:8px 4px;text-align:center;background:var(--card);font-size:11px;color:var(--ink-soft)}
+.date b{display:block;font-size:17px;color:var(--ink);font-family:'El Messiri'}
+.date.on{background:var(--green);border-color:var(--green);color:#E3F5EA}
+.date.on b{color:#fff}
+.total{display:flex;justify-content:space-between;align-items:baseline}
+.total b{font-family:'El Messiri',serif;font-size:24px}
+
+/* picking */
+.pickarea{height:320px;flex:0 0 auto;position:relative}
+.pickhint{position:absolute;bottom:14px;left:16px;right:16px;color:#fff;z-index:2;text-shadow:0 2px 10px rgba(0,0,0,.3)}
+.flower{position:absolute;cursor:pointer;transition:transform .25s,opacity .35s;z-index:2;background:none;border:0}
+.flower:hover{transform:scale(1.08)}
+.flower.picked{transform:scale(.2) translateY(-80px);opacity:0;pointer-events:none}
+.counter{position:absolute;top:16px;left:16px;z-index:3;background:rgba(255,255,255,.92);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.vialrow{display:flex;align-items:center;gap:12px;padding:12px}
+
+/* passport */
+.pp{background:linear-gradient(135deg,#1F7A52,#2E9B6A);border-radius:20px;padding:16px;color:#F3EAD8}
+.pp small{font-size:11px;opacity:.85}
+.pp b{font-family:'El Messiri',sans-serif;font-size:21px;display:block;margin:2px 0}
+.pp .prog{display:flex;gap:5px;margin-top:10px}
+.pp .prog i{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.25)}
+.pp .prog i.f{background:#FDE3E9}
+.stamps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stp{height:130px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;padding:6px;border:0;color:var(--ink)}
+.stp svg{width:52px;height:52px}
+.stp b{font-size:13px}
+.stp span{font-size:11px;color:var(--ink-soft)}
+.stp.empty{border:2px dashed var(--line);background:var(--card)}
+.stp.empty svg{opacity:.35}
+.stp.new{animation:pop .6s ease-out}
+@keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.06)}100%{transform:none}}
+
+/* blend */
+.donut{display:flex;align-items:center;gap:14px;padding:14px}
+.donut svg{width:130px;height:130px;flex:0 0 auto}
+.lg{display:flex;flex-direction:column;gap:8px;font-size:12.5px;flex:1}
+.lg div{display:flex;align-items:center;gap:7px}
+.lg b{margin-right:auto}
+.sw{width:11px;height:11px;border-radius:3px}
+input[type=range]{width:100%;accent-color:var(--green)}
+.nameinput{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px;font-family:inherit;font-size:14px;background:var(--card);color:var(--ink)}
+
+/* bottle */
+.bottlestage{height:300px;border-radius:24px;background:radial-gradient(circle at 50% 58%,var(--rose-light),var(--phone) 70%);display:flex;align-items:center;justify-content:center}
+.code{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;font-size:13px}
+.code b{font-family:'El Messiri',serif;font-size:19px;direction:ltr;letter-spacing:1px}
+
+/* partner */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{padding:12px}
+.kpi b{font-family:'El Messiri',sans-serif;font-size:24px;display:block}
+.kpi span{font-size:11.5px;color:var(--ink-soft)}
+
+/* toast */
+.toast{position:absolute;left:16px;right:16px;bottom:90px;background:var(--ink);color:#fff;border-radius:14px;padding:12px 14px;font-size:13px;z-index:20;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;text-align:center}
+.toast.show{opacity:1;transform:none}
+.empty-state{text-align:center;padding:30px 10px;color:var(--ink-soft);font-size:13px}
+.sadu{height:10px;background:
+ linear-gradient(135deg,#B8323C 25%,transparent 25%) -5px 0/10px 10px,
+ linear-gradient(225deg,#B8323C 25%,transparent 25%) -5px 0/10px 10px,
+ linear-gradient(315deg,#1E2B45 25%,transparent 25%) 0 0/10px 10px,
+ linear-gradient(45deg,#1E2B45 25%,transparent 25%) 0 0/10px 10px,#F4EBDC;border-bottom:2px solid var(--gold)}
+
+.brand{font-family:'Aref Ruqaa',serif}
+.ornament{display:flex;align-items:flex-end;justify-content:space-between;padding:0 14px;height:54px;margin-bottom:-6px}
+.ornament svg{height:100%}
+.made{position:absolute;bottom:max(14px,env(safe-area-inset-bottom));left:0;right:0;z-index:2;text-align:center;color:#fff;font-size:11.5px;line-height:1.6;text-shadow:0 1px 6px rgba(0,0,0,.35)}
+.made b{font-weight:700}
+.logos{display:flex;gap:14px;justify-content:center;align-items:center;margin-bottom:6px}
+.logos img{height:34px;width:auto;filter:drop-shadow(0 1px 4px rgba(0,0,0,.25))}
+.about{padding:16px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;background:linear-gradient(135deg,#1F7A52,#16603F);color:#F6F1E7;border:0}
+.about h3{font-family:'El Messiri',serif;font-size:18px}
+.about p{font-size:13px;line-height:1.75;opacity:.95}
+.about .deco{position:absolute;left:-6px;bottom:-8px;width:110px;opacity:.18}
+.about .logos{justify-content:flex-start}
+.about .logos img{height:30px;filter:none}
+.smoke path{stroke-dasharray:4 6;animation:smoke 3.2s linear infinite}
+@keyframes smoke{to{stroke-dashoffset:-40}}
+@media (prefers-reduced-motion:reduce){.smoke path{animation:none}}
+</style>
+</head>
+<body>
+<div class="device">
+<div class="app" id="app">
+
+  <!-- SPLASH -->
+  <section class="view active" id="v-splash" data-tabbar="0">
+    <div class="scene" data-scene="saudi-dawn" style="position:absolute;inset:0"></div>
+    <div class="logo">
+      <svg width="64" height="64" viewBox="0 0 54 54" aria-hidden="true"><path d="M27 6 C38 20 42 28 42 34 a15 15 0 0 1 -30 0 C12 28 16 20 27 6Z" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M27 46 V30 M27 34 Q20 30 19 23 Q26 25 27 32 M27 30 Q33 26 35 20 Q28 22 27 29" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      <h1 class="appname"></h1>
+      <p class="tagline"></p>
+    </div>
+    <div class="cta">
+      <button class="btn" data-go="home">ابدأ رحلتك</button>
+      <button class="link" data-go="partner">أنا صاحب مزرعة</button>
+    </div>
+    <div class="made">
+      <div class="logos" data-logos></div>
+      صُنع بحب <b>لتطوير السياحة في المملكة العربية السعودية</b><br>مقدّم لهاكاثون صندوق التنمية السياحي
+    </div>
+  </section>
+
+  <!-- HOME -->
+  <section class="view" id="v-home">
+    <div class="sadu"></div>
+    <div class="ornament" aria-hidden="true" data-ornament></div>
+    <div class="pad">
+      <div><p class="h1">أهلاً بك في <span class="appname brand" style="font-size:30px"></span></p><p class="s">وش ريحة رحلتك اليوم؟</p></div>
+      <div class="cats">
+        <button class="cat" data-go="map"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.9"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg>المزارع</button>
+        <button class="cat" data-go="seasons"><svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.9"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>المواسم</button>
+        <button class="cat" data-go="ai"><svg viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/></svg>رحلة ذكية</button>
+        <button class="cat" data-go="passport"><svg viewBox="0 0 24 24" fill="none" stroke="var(--date)" stroke-width="1.9"><rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="11" r="3"/></svg>جوازي</button>
+      </div>
+      <button class="card feature" data-farm="taif">
+        <div class="scene" data-scene="rose-field" style="height:150px">
+          <span class="chip" style="position:absolute;top:10px;right:10px;z-index:2;background:var(--rose);color:#fff;border:0">الأكثر طلباً</span>
+        </div>
+        <div style="padding:12px">
+          <b style="font-size:15px">قطف الورد الطائفي فجراً</b>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:12px;color:var(--ink-soft)"><span>الهدا، الطائف</span><span>نغمة: <b style="color:var(--rose)">ورد الفجر</b></span></div>
+        </div>
+      </button>
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><b>جوازك</b><span class="s" id="home-pass-count"></span></div>
+      <button class="passbar" id="home-passbar" data-go="passport" style="border:0;background:none;padding:0" aria-label="جواز الروائح"></button>
+      <b style="margin-top:4px">مزارع قريبة من ذوقك</b>
+      <div id="home-farms" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div class="card about">
+        <svg class="deco" viewBox="0 0 100 120" aria-hidden="true" data-palm></svg>
+        <h3>ليش بنينا <span class="appname"></span>؟</h3>
+        <p>بنيناه عشان نطوّر السياحة في المملكة العربية السعودية: نوصل الزائر لمزارعنا وأهلها، ونحوّل ورد الطائف ونخيل الأحساء وبن جازان وبخورنا إلى تجربة يعيشها ويرجع بريحتها، ونعطي المزارع دخلاً يستمر طول السنة.</p>
+        <p style="font-size:12px;opacity:.85">مقدّم لهاكاثون صندوق التنمية السياحي، دعماً لمستهدفات رؤية المملكة ٢٠٣٠ في السياحة.</p>
+        <div class="logos" data-logos></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP -->
+  <section class="view" id="v-map">
+    <div class="pad top-safe">
+      <p class="h1">خريطة الروائح</p>
+      <div class="chips" id="map-filters"></div>
+      <div class="map">
+        <svg viewBox="0 0 230 250" id="map-svg" aria-label="خريطة توضيحية للمزارع"></svg>
+      </div>
+      <div id="map-card"></div>
+      <div class="card legend" id="map-legend"></div>
+    </div>
+  </section>
+
+  <!-- SEASONS -->
+  <section class="view" id="v-seasons">
+    <div class="pad top-safe">
+      <div><p class="h1">مواسم القطف</p><p class="s">كل محصول له موسم، وكل موسم له ريحة.</p></div>
+      <div id="season-list" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+  </section>
+
+  <!-- FARM DETAIL -->
+  <section class="view" id="v-farm" data-tabbar="0">
+    <div class="scene hero" id="farm-hero">
+      <button class="iconbtn floating" style="top:18px;right:16px" data-back aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+    <div class="pad" id="farm-body"></div>
+    <div class="sticky-bottom"><button class="btn" id="farm-book">احجز التجربة</button></div>
+  </section>
+
+  <!-- BOOKING -->
+  <section class="view" id="v-book" data-tabbar="0">
+    <div class="bar"><button class="iconbtn" data-back aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button><b>الحجز</b><span style="width:38px"></span></div>
+    <div class="pad" id="book-body"></div>
+    <div class="sticky-bottom"><button class="btn" id="book-confirm">تأكيد الحجز</button></div>
+  </section>
+
+  <!-- AI -->
+  <section class="view" id="v-ai">
+    <div class="pad top-safe">
+      <div style="text-align:center">
+        <svg width="48" height="48" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="var(--green-wash)"/><path d="M20 9 l2.6 6.4 6.4 2.6-6.4 2.6L20 27l-2.6-6.4L11 18l6.4-2.6Z" fill="var(--green)"/></svg>
+        <p class="h1">رحلة تبني عطرك</p>
+        <p class="s">اختر الروائح اللي تشدك، ونقترح لك مزارع تكمّل بعضها.</p>
+      </div>
+      <div><p style="font-size:13px;margin-bottom:8px">وش يشدك من الروائح؟</p><div class="chips" id="ai-tags"></div></div>
+      <div class="card" style="padding:12px">
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span>عدد الأيام</span><b id="ai-days-v">٥ أيام</b></div>
+        <input type="range" min="2" max="10" value="5" id="ai-days" aria-label="عدد الأيام">
+      </div>
+      <button class="btn" id="ai-go">اقترح لي مسار</button>
+      <div id="ai-result"></div>
+    </div>
+  </section>
+
+  <!-- PICKING -->
+  <section class="view" id="v-pick" data-tabbar="0">
+    <div class="scene pickarea" id="pick-area">
+      <span class="counter" id="pick-counter"></span>
+      <div class="pickhint"><p style="font-size:12px;opacity:.9" id="pick-place"></p><p class="h1" style="color:#fff" id="pick-title">اضغط على المحصول عشان تقطفه</p></div>
+    </div>
+    <div class="pad" id="pick-body"></div>
+    <div class="sticky-bottom"><button class="btn" id="pick-done" disabled>أضف النغمة لجوازي</button></div>
+  </section>
+
+  <!-- PASSPORT -->
+  <section class="view" id="v-passport">
+    <div class="pad top-safe">
+      <div class="pp"><small>جواز الروائح</small><b>رحلتي في المملكة</b><small id="pp-count"></small><div class="prog" id="pp-prog"></div></div>
+      <div class="stamps" id="stamps"></div>
+      <p class="s" id="pp-hint"></p>
+      <button class="btn" id="pp-blend">ركّب عطري</button>
+    </div>
+  </section>
+
+  <!-- BLEND -->
+  <section class="view" id="v-blend" data-tabbar="0">
+    <div class="bar"><button class="iconbtn" data-back aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button><b>ورشة العطّار</b><span style="width:38px"></span></div>
+    <div class="pad">
+      <p class="h1">هذي تركيبة رحلتك</p>
+      <div class="card donut"><svg viewBox="0 0 100 100" id="donut" aria-label="نسب النغمات"></svg><div class="lg" id="blend-legend"></div></div>
+      <div class="ai"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5 l3.4 8.6 8.6 3.4-8.6 3.4L20 29l-3.4-8.6L8 17l8.6-3.4Z" fill="currentColor"/></svg><p id="blend-ai"></p></div>
+      <div class="card" style="padding:12px" id="blend-sliders"></div>
+      <div><p style="font-size:13px;margin-bottom:6px">اسم عطرك</p><input class="nameinput" id="blend-name" maxlength="18" value="رحلتي"></div>
+    </div>
+    <div class="sticky-bottom"><button class="btn" id="blend-make">اعتمد التركيبة</button></div>
+  </section>
+
+  <!-- BOTTLE -->
+  <section class="view" id="v-bottle" data-tabbar="0">
+    <div class="pad top-safe">
+      <p class="h1">عطر رحلتك جاهز</p>
+      <div class="bottlestage" id="bottle"></div>
+      <div class="card code"><span>رقم تركيبتك</span><b id="bottle-code"></b></div>
+      <p class="s">خلص عطرك؟ اطلبه بنفس التركيبة من نفس المزارع، ويوصلك لأي مكان في العالم.</p>
+      <div class="row"><button class="btn" style="flex:1.4" data-go="perfumes">شوف عطوري</button><button class="btn ghost" style="flex:1" id="bottle-gift">أهدِه</button></div>
+    </div>
+  </section>
+
+  <!-- PERFUMES -->
+  <section class="view" id="v-perfumes">
+    <div class="pad top-safe">
+      <p class="h1">عطوري وحجوزاتي</p>
+      <b>عطوري</b>
+      <div id="perf-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      <b>حجوزاتي</b>
+      <div id="trip-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div class="card" style="padding:12px;font-size:12.5px;line-height:1.9">
+        <b>وين تروح فلوسك؟</b>
+        <div style="display:flex;justify-content:space-between"><span class="s">مزارع رحلتك</span><b>٤٥٪</b></div>
+        <div style="display:flex;justify-content:space-between"><span class="s">العطّار</span><b>٢٥٪</b></div>
+        <div style="display:flex;justify-content:space-between"><span class="s">التوصيل والمنصة</span><b>٣٠٪</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNER -->
+  <section class="view" id="v-partner" data-tabbar="0">
+    <div class="bar"><button class="iconbtn" data-go="splash" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button><b>لوحة الشريك</b><span style="width:38px"></span></div>
+    <div class="pad">
+      <div><p class="s">مزرعتك</p><p class="h1">مزرعة ورد الهدا</p></div>
+      <div class="kpis">
+        <div class="card kpi"><b>٣١٢</b><span>زائر قطف هالموسم</span></div>
+        <div class="card kpi"><b>٨٧</b><span>طلب عطر من بلدانهم</span></div>
+        <div class="card kpi"><b>٤٫٩</b><span>تقييم الزوار</span></div>
+        <div class="card kpi"><b>١٢</b><span>حجز الأسبوع الجاي</span></div>
+      </div>
+      <div class="card" style="padding:12px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><b>دخلك على مدار السنة</b><span class="s">آلاف ر.س</span></div>
+        <svg viewBox="0 0 240 110" id="partner-chart" style="width:100%;height:120px" aria-label="دخل المزرعة الشهري"></svg>
+        <div style="display:flex;gap:14px;font-size:11.5px;color:var(--ink-soft);margin-top:6px">
+          <span><span class="sw" style="display:inline-block;background:var(--green-mid);margin-left:5px"></span>زيارات القطف</span>
+          <span><span class="sw" style="display:inline-block;background:var(--rose);margin-left:5px"></span>إعادة طلب العطر</span>
+        </div>
+      </div>
+      <div class="ai"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5 l3.4 8.6 8.6 3.4-8.6 3.4L20 29l-3.4-8.6L8 17l8.6-3.4Z" fill="currentColor"/></svg><p>الموسم قصير، بس طلبات العطر تجيك طول السنة. المزرعة صارت تكسب حتى في الصيف.</p></div>
+      <button class="btn" id="partner-join">سجّل مزرعتك</button>
+    </div>
+  </section>
+
+  <nav class="tabbar hidden" id="tabbar" aria-label="التنقل"></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+</div>
+
+<script>
+/* ===== Config: change the project name here ===== */
+const APP_NAME = 'ند';
+const TAGLINE  = 'خلطة رحلتك، من مزارع المملكة';
+
+/* ===== Data (demo) ===== */
+const FARMS = [
+  {id:'taif', name:'مزرعة ورد الهدا', city:'الطائف', region:'الهدا، الطائف', exp:'قطف الورد فجراً', note:'ورد الفجر', family:'زهري', color:'var(--rose)', bg:'#FDE3E9',
+   scene:'rose-field', crop:'rose', price:120, hours:'٣ ساعات', season:'مارس، أبريل', months:[2,3], rating:'٤٫٩', reviews:214, host:'أبو فهد', hostDesc:'مزارع ورد من ٣٠ سنة',
+   about:'تقطف الورد مع أبو فهد قبل طلوع الشمس، وتحضر تقطيره بالقدور النحاس، وتطلع بنغمتك الأولى.', x:82,y:146},
+  {id:'ahsa', name:'نخيل الواحة', city:'الأحساء', region:'واحة الأحساء', exp:'تلقيح النخل وجني الرطب', note:'طلع النخل', family:'دافئ', color:'var(--date)', bg:'#F6E7D3',
+   scene:'palms', crop:'date', price:90, hours:'نص يوم', season:'فبراير إلى أغسطس', months:[1,2,6,7], rating:'٤٫٨', reviews:176, host:'أم ناصر', hostDesc:'تزرع النخل مع عائلتها من جيلين',
+   about:'تتعرف على طلع النخل وريحته المميزة، وتشارك في التلقيح أو جني الرطب حسب الموسم، مع قهوة وتمر من المزرعة.', x:168,y:98},
+  {id:'jazan', name:'مدرجات بن فيفاء', city:'جازان', region:'جبال فيفاء، جازان', exp:'قطف البن وتحميصه', note:'بن مدخّن', family:'خشبي', color:'var(--coffee)', bg:'#EEDFD6',
+   scene:'coffee', crop:'coffee', price:150, hours:'٤ ساعات', season:'الشتاء', months:[10,11,0], rating:'٤٫٩', reviews:98, host:'العم يحيى', hostDesc:'يزرع البن الخولاني في المدرجات',
+   about:'تمشي بين مدرجات البن في الجبال، تقطف الحبوب الحمراء، وتحمّصها على النار بالطريقة التقليدية.', x:96,y:196},
+  {id:'asir', name:'روضة أعشاب السودة', city:'عسير', region:'السودة، أبها', exp:'جمع البعيثران والريحان', note:'أعشاب المطر', family:'منعش', color:'var(--herb)', bg:'#E3F5EA',
+   scene:'herbs', crop:'herb', price:80, hours:'ساعتين', season:'بعد الأمطار', months:[3,4,7,8], rating:'٤٫٧', reviews:61, host:'أم سعد', hostDesc:'تعرف أسرار أعشاب الجبل',
+   about:'تجمع الأعشاب العطرية بعد المطر مع أم سعد، وتتعلم كيف تتزين بها نساء عسير في المناسبات.', x:108,y:170},
+  {id:'jeddah', name:'بيت الرواشين', city:'جدة', region:'جدة التاريخية', exp:'ريحة البحر والخشب', note:'بحر وروشان', family:'منعش', color:'var(--sea)', bg:'#DDF0F3',
+   scene:'sea', crop:'herb', price:70, hours:'ساعتين', season:'طول السنة', months:[0,1,2,3,4,5,6,7,8,9,10,11], rating:'٤٫٦', reviews:132, host:'العم حسن', hostDesc:'عطّار في البلد',
+   about:'جولة في أزقة البلد قبل المغرب، تشم فيها هوا البحر وخشب الرواشين والهيل من الدكاكين.', x:68,y:136}
+];
+const MONTHS=['ينا','فبر','مار','أبر','ماي','يون','يول','أغس','سبت','أكت','نوف','ديس'];
+const ar=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const farm=id=>FARMS.find(f=>f.id===id);
+const cssv=v=>v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1)).trim():v;
+
+/* ===== State ===== */
+const DEFAULT_STATE={collected:['taif','ahsa'], picks:{taif:120,ahsa:40}, bookings:[{farm:'jazan',date:'٢٨ مارس',people:2}], perfumes:[]};
+let S;
+try{S=JSON.parse(localStorage.getItem('nadd_state'))||structuredClone(DEFAULT_STATE)}catch(e){S=structuredClone(DEFAULT_STATE)}
+const save=()=>{try{localStorage.setItem('nadd_state',JSON.stringify(S))}catch(e){}};
+
+/* ===== Navigation ===== */
+const TABS=[['home','الرئيسية','<path d="M4 11l8-7 8 7v9H4z"/>'],['map','اكتشف','<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>'],
+ ['passport','جوازي','<rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="11" r="3"/><path d="M9 17h6"/>'],
+ ['perfumes','عطوري','<path d="M10 3h4v4l2 2v11a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-2z"/>'],['ai','رحلة ذكية','<path d="M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z"/>']];
+const tabbar=document.getElementById('tabbar');
+tabbar.innerHTML=TABS.map(t=>`<button class="tab" data-go="${t[0]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round">${t[2]}</svg>${t[1]}</button>`).join('');
+let navStack=[];let current='splash';
+function go(view,push=true){
+  if(push&&current!==view)navStack.push(current);
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const el=document.getElementById('v-'+view);el.classList.add('active');el.scrollTop=0;current=view;
+  const showTabs=el.dataset.tabbar!=='0';
+  tabbar.classList.toggle('hidden',!showTabs);
+  tabbar.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.go===view));
+  (RENDER[view]||(()=>{}))();
+}
+function back(){const v=navStack.pop()||'home';go(v,false)}
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');if(g){go(g.dataset.go);return}
+  const f=e.target.closest('[data-farm]');if(f){openFarm(f.dataset.farm);return}
+  if(e.target.closest('[data-back]'))back();
+});
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2400)}
+
+/* ===== Illustrations ===== */
+function rosesRow(y,n,w,h,col,seed){let s='';for(let i=0;i<n;i++){const x=(i+0.5)*w/n+((i*37+seed)%7-3);s+=`<ellipse cx="${x}" cy="${y}" rx="${w/n*0.55}" ry="${h}" fill="#4E7F57"/>`;for(let k=0;k<4;k++){const dx=((i*13+k*29+seed)%17)-8,dy=((i*7+k*11)%9)-6;s+=`<circle cx="${x+dx}" cy="${y+dy}" r="${h*0.32}" fill="${col}"/>`}}return s}
+function palm(x,base,hgt,sc){return `<path d="M${x} ${base} Q${x+4*sc} ${base-hgt/2} ${x-2*sc} ${base-hgt}" stroke="#6E5134" stroke-width="${4*sc}" fill="none"/>`+[[-30,8],[-24,-10],[-6,-20],[14,-18],[30,-6],[28,10]].map(([dx,dy])=>`<path d="M${x-2*sc} ${base-hgt} Q${x-2*sc+dx*sc*0.6} ${base-hgt+dy*sc-10*sc} ${x-2*sc+dx*sc} ${base-hgt+dy*sc+6*sc}" stroke="#3F8F5A" stroke-width="${5*sc}" fill="none" stroke-linecap="round"/>`).join('')}
+const SCENES={
+ 'rose-dawn':id=>({vb:'0 0 250 560',s:`<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9A9A0"/><stop offset=".45" stop-color="#F4CFB4"/><stop offset="1" stop-color="#F7E3CC"/></linearGradient><linearGradient id="d${id}" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#1F2E4D" stop-opacity=".5"/></linearGradient></defs>
+   <rect width="250" height="560" fill="url(#g${id})"/><circle cx="160" cy="250" r="34" fill="#FBEAD3"/>
+   <path d="M0 260 L50 200 L95 240 L150 180 L205 230 L250 205 V560 H0Z" fill="#B98C8E" opacity=".55"/><path d="M0 300 L60 250 L120 285 L180 245 L250 280 V560 H0Z" fill="#8E7480" opacity=".6"/>
+   <path d="M0 340 Q125 300 250 336 V560 H0Z" fill="#5E9A6A"/>${rosesRow(360,6,250,13,'#EE8FA6',1)}${rosesRow(395,5,250,16,'#E2607F',4)}${rosesRow(440,4,250,22,'#F09AB0',9)}${rosesRow(500,3,250,30,'#E2607F',2)}
+   <rect width="250" height="560" fill="url(#d${id})"/>`}),
+ 'rose-field':id=>({vb:'0 0 250 200',s:`<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1BFA9"/><stop offset="1" stop-color="#F8E4CF"/></linearGradient></defs>
+   <rect width="250" height="200" fill="url(#g${id})"/><circle cx="70" cy="70" r="20" fill="#FBEAD3"/><path d="M0 90 L60 50 L110 80 L170 40 L250 85 V200 H0Z" fill="#A98A90" opacity=".55"/>
+   <path d="M0 110 Q125 80 250 108 V200 H0Z" fill="#5E9A6A"/>${rosesRow(118,7,250,9,'#EE8FA6',3)}${rosesRow(140,6,250,12,'#E2607F',5)}${rosesRow(172,4,250,18,'#F09AB0',8)}`}),
+ 'palms':id=>({vb:'0 0 250 200',s:`<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3D29C"/><stop offset="1" stop-color="#F8E7C9"/></linearGradient></defs>
+   <rect width="250" height="200" fill="url(#g${id})"/><circle cx="190" cy="60" r="22" fill="#FBEAD3"/><path d="M0 160 Q125 140 250 160 V200 H0Z" fill="#D9BC8C"/>
+   ${palm(30,180,100,1)}${palm(95,182,120,1.15)}${palm(170,180,96,1)}${palm(230,182,110,1.05)}`}),
+ 'coffee':id=>({vb:'0 0 250 200',s:`<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFE6EC"/><stop offset="1" stop-color="#EAF3E6"/></linearGradient></defs>
+   <rect width="250" height="200" fill="url(#g${id})"/><path d="M0 70 L70 30 L140 60 L210 20 L250 40 V200 H0Z" fill="#8FB59A" opacity=".6"/>
+   ${[0,1,2,3,4].map(i=>`<path d="M0 ${90+i*24} Q125 ${78+i*24} 250 ${90+i*24} V${112+i*24} Q125 ${100+i*24} 0 ${112+i*24}Z" fill="${i%2?'#4F8F5E':'#5FA26C'}"/><path d="M0 ${112+i*24} Q125 ${100+i*24} 250 ${112+i*24}" stroke="#A9876A" stroke-width="3" fill="none"/>`).join('')}
+   ${Array.from({length:40},(_,k)=>`<circle cx="${(k*37)%250}" cy="${96+((k*13)%5)*24}" r="2.6" fill="#D3423F"/>`).join('')}`}),
+ 'herbs':id=>({vb:'0 0 250 200',s:`<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9DCE4"/><stop offset="1" stop-color="#EAF2EA"/></linearGradient></defs>
+   <rect width="250" height="200" fill="url(#g${id})"/><g stroke="#9DB8C4" stroke-width="1.5" opacity=".7">${Array.from({length:14},(_,k)=>`<line x1="${k*19}" y1="${10+(k%3)*8}" x2="${k*19-6}" y2="${28+(k%3)*8}"/>`).join('')}</g>
+   <path d="M0 110 L60 50 L110 90 L160 40 L250 100 V200 H0Z" fill="#6E9C7E"/><path d="M0 140 Q125 110 250 140 V200 H0Z" fill="#4F8F5E"/>
+   ${Array.from({length:22},(_,k)=>`<path d="M${(k*23)%250} ${200-((k*7)%30)} q4 -22 2 -34 M${(k*23)%250} ${200-((k*7)%30)} q-8 -14 -12 -24 M${(k*23)%250} ${200-((k*7)%30)} q8 -14 12 -22" stroke="#A6DDBC" stroke-width="2.4" fill="none"/>`).join('')}`}),
+ 'sea':id=>({vb:'0 0 250 200',s:`<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6C9A5"/><stop offset="1" stop-color="#F9E3CF"/></linearGradient></defs>
+   <rect width="250" height="200" fill="url(#g${id})"/><rect x="0" y="120" width="250" height="80" fill="#2E9BB0"/>
+   <path d="M0 126 Q20 120 40 126 T80 126 T120 126 T160 126 T200 126 T250 126" stroke="#9FD6E0" stroke-width="2" fill="none"/>
+   <rect x="40" y="40" width="70" height="90" fill="#E9D7B8"/><rect x="120" y="20" width="80" height="110" fill="#E1C9A0"/>
+   ${[[50,55],[78,55],[50,90],[78,90],[132,40],[166,40],[132,78],[166,78]].map(([x,y])=>`<rect x="${x}" y="${y}" width="22" height="26" fill="#2F7F6A"/><g stroke="#1F5E4E" stroke-width="1.4"><line x1="${x+7}" y1="${y}" x2="${x+7}" y2="${y+26}"/><line x1="${x+15}" y1="${y}" x2="${x+15}" y2="${y+26}"/></g>`).join('')}`})
+};
+let sid=0;
+function sceneSvg(type,vbOverride){const r=SCENES[type](sid++);return `<svg class="sc" viewBox="${vbOverride||r.vb}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${r.s}</svg>`}
+function paintScenes(root=document){root.querySelectorAll('[data-scene]').forEach(el=>{if(el.querySelector('svg.sc'))return;el.insertAdjacentHTML('afterbegin',sceneSvg(el.dataset.scene))})}
+function thumb(f){return `<div class="thumb">${sceneSvg(f.scene,'30 40 190 150')}</div>`}
+const leafIcon=c=>`<svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><path d="M12 21V11M12 11c-4 0-6-3-6-7 4 0 6 3 6 7zM12 11c4 0 6-3 6-7-4 0-6 3-6 7z"/></svg>`;
+
+/* ===== Renderers ===== */
+const RENDER={
+ home(){
+  document.getElementById('home-pass-count').textContent=`${ar(S.collected.length)} من ${ar(FARMS.length)} نغمات`;
+  document.getElementById('home-passbar').innerHTML=FARMS.map(f=>`<i style="${S.collected.includes(f.id)?'background:'+f.color:''}"></i>`).join('');
+  document.getElementById('home-farms').innerHTML=FARMS.filter(f=>f.id!=='taif').slice(0,3).map(f=>`<button class="card farmrow" data-farm="${f.id}">${thumb(f)}<div style="flex:1;min-width:0"><b style="font-size:14px">${f.exp}</b><p class="s">${f.region}</p><p style="font-size:12px;margin-top:2px"><span class="dot" style="background:${f.color}"></span> ${f.note}</p></div><b style="font-size:13px;white-space:nowrap">${ar(f.price)} ر.س</b></button>`).join('');
+ },
+ map(){
+  const fams=['الكل','زهري','دافئ','خشبي','منعش'];
+  const fl=document.getElementById('map-filters');
+  if(!fl.dataset.sel)fl.dataset.sel='الكل';
+  fl.innerHTML=fams.map(x=>`<button class="chip ${fl.dataset.sel===x?'on':''}" data-fam="${x}">${x}</button>`).join('');
+  fl.onclick=e=>{const b=e.target.closest('[data-fam]');if(!b)return;fl.dataset.sel=b.dataset.fam;RENDER.map()};
+  const vis=FARMS.filter(f=>fl.dataset.sel==='الكل'||f.family===fl.dataset.sel);
+  const svg=document.getElementById('map-svg');
+  svg.innerHTML=`<path d="M42 22 L102 12 L150 48 L168 66 L176 88 L188 92 L184 104 L208 112 L222 118 L212 168 L150 196 L96 214 L80 196 L66 150 L50 112 L34 70 L22 40Z" fill="#fff" stroke="#A6DDBC" stroke-width="2"/>
+   <circle cx="132" cy="96" r="3" fill="#5D6880"/><text x="128" y="108" font-family="Tajawal" font-size="8" fill="#5D6880">الرياض</text>`+
+   vis.map(f=>`<g class="pin ${svg.dataset.sel===f.id?'sel':''}" data-pin="${f.id}" tabindex="0" role="button" aria-label="${f.name}"><circle cx="${f.x}" cy="${f.y}" r="14" fill="${cssv(f.color)}" opacity=".2"/><circle class="core" cx="${f.x}" cy="${f.y}" r="7.5" fill="${cssv(f.color)}"/></g>`).join('');
+  const pick=id=>{svg.dataset.sel=id;RENDER.map()};
+  svg.onclick=e=>{const p=e.target.closest('[data-pin]');if(p)pick(p.dataset.pin)};
+  svg.onkeydown=e=>{const p=e.target.closest('[data-pin]');if(p&&(e.key==='Enter'||e.key===' ')){e.preventDefault();pick(p.dataset.pin)}};
+  const sel=farm(svg.dataset.sel)||vis[0];
+  document.getElementById('map-card').innerHTML=sel?`<button class="card farmrow" data-farm="${sel.id}">${thumb(sel)}<div style="flex:1;min-width:0"><b style="font-size:14px">${sel.name}</b><p class="s">${sel.region}</p><div class="rating"><span class="star">★</span>${sel.rating} <span class="s">(${ar(sel.reviews)})</span></div></div><span class="chip" style="border-color:${sel.color};color:${sel.color}">${sel.note}</span></button>`:'<p class="empty-state">ما فيه مزارع بهالفئة</p>';
+  document.getElementById('map-legend').innerHTML=FARMS.map(f=>`<span><i class="dot" style="background:${f.color}"></i>${f.city}</span>`).join('');
+ },
+ seasons(){
+  const now=new Date().getMonth();
+  document.getElementById('season-list').innerHTML=FARMS.map(f=>{
+    const inS=f.months.includes(now);
+    return `<button class="card season" data-farm="${f.id}" style="text-align:right;width:100%;color:var(--ink)"><div class="ic" style="background:${f.color}">${leafIcon('#fff')}</div><div style="flex:1;min-width:0">
+     <div style="display:flex;justify-content:space-between"><b>${f.exp}</b>${inS?'<span class="chip" style="padding:2px 8px;background:var(--green-wash);color:var(--green);border:0">موسمه الحين</span>':''}</div>
+     <p class="s">${f.city}، ${f.season}، نغمة: ${f.note}</p>
+     <div class="yr">${f.months.map(m=>`<i style="right:${m/12*100}%;width:${100/12}%;background:${f.color}"></i>`).join('')}<i style="right:${now/12*100}%;width:2px;background:var(--ink)"></i></div>
+     <div class="months"><span>ينا</span><span>أبر</span><span>يول</span><span>أكت</span><span>ديس</span></div></div></button>`}).join('');
+ },
+ passport(){
+  const n=S.collected.length;
+  document.getElementById('pp-count').textContent=`${ar(n)} من ${ar(FARMS.length)} نغمات في رحلتك`;
+  document.getElementById('pp-prog').innerHTML=FARMS.map((f,i)=>`<i class="${i<n?'f':''}"></i>`).join('');
+  document.getElementById('stamps').innerHTML=FARMS.map(f=>{const has=S.collected.includes(f.id);
+    return `<button class="stp ${has?'':'empty'} ${S._new===f.id?'new':''}" style="${has?'background:'+f.bg:''}" data-farm="${f.id}"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="${f.color}" stroke-width="2" stroke-dasharray="3 3"/><path d="M22 32V18M22 18c-5 0-8-3-8-8 5 0 8 3 8 8zM22 18c5 0 8-3 8-8-5 0-8 3-8 8z" fill="none" stroke="${f.color}" stroke-width="2"/></svg><b>${f.city}</b><span>${f.note}${has?'':'، باقي'}</span></button>`}).join('');
+  S._new=null;
+  const hint=document.getElementById('pp-hint'),btn=document.getElementById('pp-blend');
+  if(n<2){hint.textContent='اجمع نغمتين على الأقل عشان تقدر تركّب عطرك.';btn.disabled=true}
+  else{hint.textContent=n<FARMS.length?'تقدر تركّب عطرك الحين، أو تكمّل جوازك بنغمات أكثر.':'اكتمل جوازك! عطرك بيكون غني بكل روائح المملكة.';btn.disabled=false}
+ },
+ perfumes(){
+  const pl=document.getElementById('perf-list');
+  pl.innerHTML=S.perfumes.length?S.perfumes.map((p,i)=>`<div class="card" style="padding:12px;display:flex;gap:12px;align-items:center">${miniBottle(p)}<div style="flex:1;min-width:0"><b>${p.name}</b><p class="s">${p.parts.map(x=>farm(x.id).city).join('، ')}</p><p style="font-size:12px;direction:ltr;text-align:right;font-family:'El Messiri'">${p.code}</p></div><button class="chip" data-reorder="${i}" style="background:var(--rose);color:#fff;border:0">اطلبه</button></div>`).join('')
+   :'<div class="card empty-state">ما ركّبت عطر للحين. اجمع نغماتك من المزارع وركّبه من جوازك.</div>';
+  pl.onclick=e=>{const b=e.target.closest('[data-reorder]');if(b)toast('تم الطلب! نفس التركيبة من نفس المزارع، توصلك خلال ٥ أيام')};
+  document.getElementById('trip-list').innerHTML=S.bookings.length?S.bookings.map((b,i)=>{const f=farm(b.farm);const done=S.collected.includes(f.id);
+   return `<div class="card" style="padding:10px;display:flex;gap:10px;align-items:center">${thumb(f)}<div style="flex:1;min-width:0"><b style="font-size:13.5px">${f.exp}</b><p class="s">${f.city}، ${b.date}، ${ar(b.people)} أشخاص</p></div>${done?'<span class="chip" style="background:var(--green-wash);color:var(--green);border:0">تمت</span>':`<button class="chip on" data-start="${f.id}">ابدأ</button>`}</div>`}).join('')
+   :'<div class="card empty-state">ما عندك حجوزات</div>';
+  document.getElementById('trip-list').onclick=e=>{const b=e.target.closest('[data-start]');if(b)startPick(b.dataset.start)};
+ },
+ partner(){
+  const visits=[4,10,34,40,8,3,2,8,3,2,3,4],re=[6,7,8,9,8,7,7,8,8,9,11,14];
+  let s='';visits.forEach((v,i)=>{const x=8+i*19.4;const r=re[i];s+=`<rect x="${x}" y="${96-r*1.4}" width="13" height="${r*1.4}" rx="2" fill="${cssv('var(--rose)')}"/><rect x="${x}" y="${96-r*1.4-v*1.4}" width="13" height="${v*1.4}" rx="2" fill="${cssv('var(--green-mid)')}"/><text x="${x+6.5}" y="107" text-anchor="middle" font-size="6.5" fill="#5D6880" font-family="Tajawal">${MONTHS[i]}</text>`});
+  document.getElementById('partner-chart').innerHTML=s;
+ }
+};
+
+/* ===== Farm detail ===== */
+let curFarm=null;
+function openFarm(id){
+  const f=farm(id);curFarm=f;
+  const hero=document.getElementById('farm-hero');hero.querySelectorAll('svg.sc').forEach(n=>n.remove());hero.insertAdjacentHTML('afterbegin',sceneSvg(f.scene));
+  const has=S.collected.includes(f.id);
+  document.getElementById('farm-body').innerHTML=`
+   <div style="display:flex;justify-content:space-between;align-items:flex-start"><div><p class="h1">${f.exp}</p><p class="s">${f.name}، ${f.region}</p></div><div class="rating"><span class="star">★</span><b>${f.rating}</b><span class="s">(${ar(f.reviews)})</span></div></div>
+   <div class="chips"><span class="chip">${f.family}</span><span class="chip">تجربة زراعية</span><span class="chip">للعائلات</span></div>
+   <p class="s" style="font-size:13.5px">${f.about}</p>
+   <div class="note" style="background:${f.bg};color:${f.color}"><span class="dot" style="background:${f.color}"></span>نغمتك من هنا: <b>${f.note}</b>${has?' (موجودة في جوازك)':''}</div>
+   <div class="row"><div class="card mini">المدة<b>${f.hours}</b></div><div class="card mini">الموسم<b>${f.season}</b></div><div class="card mini">للشخص<b>${ar(f.price)} ر.س</b></div></div>
+   <div class="card" style="display:flex;align-items:center;gap:10px;padding:12px"><div style="width:44px;height:44px;border-radius:50%;background:${f.bg};display:flex;align-items:center;justify-content:center;font-family:'El Messiri',serif;font-size:18px;color:${f.color}">${f.host.split(' ').pop()[0]}</div><div><b style="font-size:14px">${f.host}</b><p class="s">${f.hostDesc}</p></div></div>`;
+  go('farm');
+}
+document.getElementById('farm-book').onclick=()=>openBooking(curFarm);
+
+/* ===== Booking ===== */
+let bk={};
+function openBooking(f){
+  const d=new Date();const days=[...Array(7)].map((_,i)=>{const x=new Date(d);x.setDate(d.getDate()+i+2);return x});
+  const wd=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const mn=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  bk={farm:f,people:2,date:0,days:days.map(x=>({wd:wd[x.getDay()],d:x.getDate(),m:mn[x.getMonth()]}))};
+  renderBooking();go('book');
+}
+function renderBooking(){
+  const f=bk.farm;
+  document.getElementById('book-body').innerHTML=`
+   <div class="card farmrow">${thumb(f)}<div><b style="font-size:14px">${f.exp}</b><p class="s">${f.region}</p></div></div>
+   <b>اختر اليوم</b>
+   <div class="dates">${bk.days.map((x,i)=>`<button class="date ${bk.date===i?'on':''}" data-d="${i}">${x.wd}<b>${ar(x.d)}</b>${x.m}</button>`).join('')}</div>
+   <b>عدد الأشخاص</b>
+   <div class="card stepper"><button data-p="-1" aria-label="أقل">−</button><b style="font-size:18px">${ar(bk.people)}</b><button data-p="1" aria-label="أكثر">+</button></div>
+   <div class="note" style="background:${f.bg};color:${f.color}"><span class="dot" style="background:${f.color}"></span>كل شخص يطلع بنغمة ${f.note} في جوازه</div>
+   <div class="card" style="padding:14px"><div class="total"><span class="s">الإجمالي</span><b>${ar(f.price*bk.people)} ر.س</b></div></div>
+   <p class="s" style="text-align:center">نسخة تجريبية، ما فيه دفع حقيقي.</p>`;
+}
+document.getElementById('book-body').addEventListener('click',e=>{
+  const d=e.target.closest('[data-d]');if(d){bk.date=+d.dataset.d;renderBooking()}
+  const p=e.target.closest('[data-p]');if(p){bk.people=Math.min(10,Math.max(1,bk.people+ +p.dataset.p));renderBooking()}
+});
+document.getElementById('book-confirm').onclick=()=>{
+  const x=bk.days[bk.date];S.bookings.push({farm:bk.farm.id,date:`${ar(x.d)} ${x.m}`,people:bk.people});save();
+  toast('تم الحجز! تقدر تبدأ التجربة من صفحة عطوري');
+  setTimeout(()=>startPick(bk.farm.id),700);
+};
+
+/* ===== Picking (simulated experience) ===== */
+let pickState={};
+function startPick(id){
+  const f=farm(id);pickState={f,count:0,target:6};
+  const area=document.getElementById('pick-area');
+  area.querySelectorAll('svg.sc,.flower').forEach(n=>n.remove());
+  area.insertAdjacentHTML('afterbegin',sceneSvg(f.scene,'0 0 250 200'));
+  const pos=[[18,30],[48,22],[74,34],[30,52],[62,50],[84,58]];
+  pos.forEach(([l,t],i)=>area.insertAdjacentHTML('beforeend',`<button class="flower" style="left:${l}%;top:${t}%" aria-label="اقطف">${cropSvg(f.crop,f.color)}</button>`));
+  document.getElementById('pick-place').textContent=`${f.region}، مع ${f.host}`;
+  document.getElementById('pick-title').textContent='اضغط على المحصول عشان تقطفه';
+  updatePick();
+  document.getElementById('pick-body').innerHTML=`<div class="card vialrow"><svg width="56" height="74" viewBox="0 0 54 70" aria-hidden="true"><rect x="19" y="2" width="16" height="12" rx="2" fill="#6B4E34"/><clipPath id="vv"><path d="M10 20 Q10 16 16 16 H38 Q44 16 44 20 V60 Q44 66 38 66 H16 Q10 66 10 60Z"/></clipPath><g clip-path="url(#vv)"><rect id="vial-liquid" x="6" y="70" width="44" height="60" fill="${cssv(f.color)}" style="transition:y .4s"/></g><path d="M10 20 Q10 16 16 16 H38 Q44 16 44 20 V60 Q44 66 38 66 H16 Q10 66 10 60Z" fill="none" stroke="#1E2B45" stroke-width="2"/></svg>
+   <div><b>${f.note}</b><p class="s">كل ما تقطف أكثر، تتعبى قارورتك. بعدها تنحفظ لك من تقطير المزرعة.</p></div></div>`;
+  go('pick');
+}
+function cropSvg(crop,color){const c=cssv(color);
+  if(crop==='rose')return `<svg width="50" height="50" viewBox="-25 -25 50 50">${[0,72,144,216,288].map(a=>`<ellipse rx="12" ry="9" transform="rotate(${a}) translate(0 -9)" fill="#F09AB0"/>`).join('')}${[36,108,180,252,324].map(a=>`<ellipse rx="7" ry="5" transform="rotate(${a}) translate(0 -4)" fill="${c}"/>`).join('')}<circle r="3" fill="#B13D5C"/></svg>`;
+  if(crop==='date')return `<svg width="46" height="54" viewBox="0 0 46 54"><path d="M23 0 V14" stroke="#C99A3E" stroke-width="3"/>${[[14,20],[24,22],[33,20],[18,32],[28,34],[22,44]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="6" ry="8" fill="${c}"/>`).join('')}</svg>`;
+  if(crop==='coffee')return `<svg width="46" height="46" viewBox="0 0 46 46"><path d="M4 30 Q23 10 42 26" stroke="#3F7A4E" stroke-width="3" fill="none"/>${[[12,24],[20,19],[28,18],[35,21],[16,30],[26,26]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#D3423F"/>`).join('')}</svg>`;
+  return `<svg width="44" height="50" viewBox="0 0 44 50"><path d="M22 50 V20 M22 30 Q10 26 8 12 Q20 16 22 28 M22 26 Q34 22 36 8 Q24 12 22 24 M22 20 Q20 8 22 0 Q26 8 22 20" stroke="${c}" stroke-width="3" fill="#A6DDBC" stroke-linecap="round"/></svg>`;
+}
+function updatePick(){
+  const {count,target}=pickState;
+  document.getElementById('pick-counter').textContent=`قطفت ${ar(count)} من ${ar(target)}`;
+  const liq=document.getElementById('vial-liquid');if(liq)liq.setAttribute('y',70-count/target*50);
+  const btn=document.getElementById('pick-done');btn.disabled=count<target;
+  if(count>=target)document.getElementById('pick-title').textContent='قارورتك امتلت!';
+}
+document.getElementById('pick-area').addEventListener('click',e=>{const fl=e.target.closest('.flower');if(!fl||fl.classList.contains('picked'))return;fl.classList.add('picked');pickState.count++;updatePick()});
+document.getElementById('pick-done').onclick=()=>{
+  const f=pickState.f;
+  if(!S.collected.includes(f.id)){S.collected.push(f.id);S._new=f.id}
+  S.picks[f.id]=(S.picks[f.id]||0)+pickState.count*20;save();
+  toast(`انضافت نغمة ${f.note} لجوازك`);go('passport');
+};
+
+/* ===== AI route (prototype logic: tag match + seasonality + passport gaps) ===== */
+const aiSel=new Set(['زهري','دافئ']);
+function renderAiTags(){document.getElementById('ai-tags').innerHTML=['زهري','دافئ','خشبي','منعش'].map(t=>`<button class="chip ${aiSel.has(t)?'on':''}" data-tag="${t}">${t}</button>`).join('')}
+document.getElementById('ai-tags').onclick=e=>{const b=e.target.closest('[data-tag]');if(!b)return;const t=b.dataset.tag;aiSel.has(t)?aiSel.delete(t):aiSel.add(t);renderAiTags()};
+const daysIn=document.getElementById('ai-days');daysIn.oninput=()=>document.getElementById('ai-days-v').textContent=`${ar(daysIn.value)} أيام`;
+document.getElementById('ai-go').onclick=()=>{
+  const days=+daysIn.value, now=new Date().getMonth();
+  const scored=FARMS.map(f=>({f,score:(aiSel.has(f.family)?3:0)+(f.months.includes(now)?1:0)+(S.collected.includes(f.id)?-1.5:1)}))
+    .sort((a,b)=>b.score-a.score);
+  const n=Math.min(FARMS.length,Math.max(2,Math.round(days/2)));
+  const route=scored.slice(0,n).map(x=>x.f);
+  const total=route.reduce((s,f)=>s+f.price,0);
+  document.getElementById('ai-result').innerHTML=`<div class="card" style="padding:14px;display:flex;flex-direction:column;gap:10px">
+   <b style="color:var(--green)">مسارك المقترح، ${ar(days)} أيام</b>
+   ${route.map((f,i)=>`<button class="farmrow" data-farm="${f.id}" style="border:0;background:none;padding:0"><span style="width:28px;height:28px;border-radius:50%;background:${f.color};color:#fff;display:flex;align-items:center;justify-content:center;font-family:'El Messiri',serif;flex:0 0 auto">${ar(i+1)}</span><div style="flex:1"><b style="font-size:13.5px">${f.city}</b> <span class="s">${f.exp}</span><p style="font-size:11.5px;color:${f.color}">نغمة: ${f.note}</p></div></button>`).join('')}
+   <div class="ai"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5 l3.4 8.6 8.6 3.4-8.6 3.4L20 29l-3.4-8.6L8 17l8.6-3.4Z" fill="currentColor"/></svg><p>اخترنا مزارع تطابق ذوقك وموسمها مناسب، وركزنا على النغمات اللي ناقصة في جوازك عشان يطلع عطرك متوازن.</p></div>
+   <div class="total"><span class="s">التكلفة التقريبية للشخص</span><b style="font-size:20px">${ar(total)} ر.س</b></div></div>`;
+};
+
+/* ===== Blend ===== */
+let blend=[];
+document.getElementById('pp-blend').onclick=()=>{
+  blend=S.collected.map(id=>({id,w:S.picks[id]||60}));
+  const sum=blend.reduce((s,b)=>s+b.w,0);blend.forEach(b=>b.w=Math.round(b.w/sum*100));
+  renderBlend();go('blend');
+};
+function norm(){const s=blend.reduce((a,b)=>a+b.w,0)||1;return blend.map(b=>({...b,p:Math.round(b.w/s*100)}))}
+function renderBlend(){
+  const parts=norm().sort((a,b)=>b.p-a.p);
+  const C=2*Math.PI*36;let off=0;
+  document.getElementById('donut').innerHTML=parts.map(b=>{const len=b.p/100*C;const s=`<circle cx="50" cy="50" r="36" fill="none" stroke="${cssv(farm(b.id).color)}" stroke-width="17" stroke-dasharray="${len} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 50 50)"/>`;off+=len;return s}).join('')+
+   `<text x="50" y="49" text-anchor="middle" font-family="El Messiri" font-size="13" font-weight="700" fill="#1E2B45">${ar(parts.length)} مزارع</text><text x="50" y="62" text-anchor="middle" font-family="Tajawal" font-size="7.5" fill="#5D6880">خلطة رحلتك</text>`;
+  document.getElementById('blend-legend').innerHTML=parts.map(b=>`<div><span class="sw" style="background:${farm(b.id).color}"></span>${farm(b.id).note}<b>${ar(b.p)}٪</b></div>`).join('');
+  const top=farm(parts[0].id),last=farm(parts[parts.length-1].id);
+  document.getElementById('blend-ai').textContent=`${top.note} هو قلب عطرك لأنه أكثر شي قطفته بيدك. و${last.note} لمسة خفيفة تعطيه طابع ${last.family}. تقدر تعدّل النسب مع العطّار.`;
+  const sl=document.getElementById('blend-sliders');
+  if(!sl.dataset.built||sl.dataset.built!==blend.map(b=>b.id).join()){
+    sl.innerHTML='<b style="font-size:13px">عدّلها مع العطّار</b>'+blend.map((b,i)=>`<label style="display:block;margin-top:10px;font-size:12px"><span style="display:flex;justify-content:space-between"><span><span class="dot" style="background:${farm(b.id).color}"></span> ${farm(b.id).note}</span></span><input type="range" min="5" max="100" value="${b.w}" data-i="${i}" style="accent-color:${cssv(farm(b.id).color)}"></label>`).join('');
+    sl.dataset.built=blend.map(b=>b.id).join();
+    sl.oninput=e=>{const i=e.target.dataset.i;if(i==null)return;blend[i].w=+e.target.value;renderBlend()};
+  }
+}
+document.getElementById('blend-make').onclick=()=>{
+  const parts=norm();const name=(document.getElementById('blend-name').value.trim()||'رحلتي');
+  const code='ND-'+parts.map(p=>p.id[0].toUpperCase()).join('')+'-'+String(1000+Math.floor(Math.random()*9000));
+  const p={name,code,parts:parts.map(x=>({id:x.id,p:x.p}))};S.perfumes.unshift(p);save();
+  document.getElementById('bottle').innerHTML=bigBottle(p);
+  document.getElementById('bottle-code').textContent=code;
+  go('bottle');
+};
+document.getElementById('bottle-gift').onclick=async()=>{
+  const p=S.perfumes[0];const text=`أهديتك عطر "${p.name}" من ${APP_NAME}، تركيبته ${p.code}`;
+  try{if(navigator.share){await navigator.share({text});return}await navigator.clipboard.writeText(text);toast('انسخ رابط الهدية، أرسله لمن تحب')}catch(e){toast('تم تجهيز الهدية')}
+};
+function gradStops(p){let acc=0;return p.parts.map(x=>{const mid=acc+x.p/2;acc+=x.p;return `<stop offset="${mid/100}" stop-color="${cssv(farm(x.id).color)}"/>`}).join('')}
+function bigBottle(p){const id='bb'+Date.now();return `<svg width="170" height="250" viewBox="0 0 170 240" aria-label="قارورة العطر">
+ <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${gradStops(p)}</linearGradient><clipPath id="c${id}"><path d="M30 92 Q30 72 55 72 H115 Q140 72 140 92 V205 Q140 222 122 222 H48 Q30 222 30 205Z"/></clipPath></defs>
+ <ellipse cx="85" cy="230" rx="62" ry="8" fill="#000" opacity=".12"/><path d="M68 46 Q66 18 85 10 Q104 18 102 46Z" fill="#1F7A52"/><path d="M85 14 V44 M85 30 Q77 26 76 18 M85 26 Q93 22 94 15" stroke="#A6DDBC" stroke-width="2" fill="none"/>
+ <rect x="72" y="46" width="26" height="26" fill="#E8C98E"/><path d="M30 92 Q30 72 55 72 H115 Q140 72 140 92 V205 Q140 222 122 222 H48 Q30 222 30 205Z" fill="#F7F2F2" opacity=".6"/>
+ <g clip-path="url(#c${id})"><rect x="20" y="98" width="130" height="140" fill="url(#${id})" opacity=".85"/></g>
+ <path d="M30 92 Q30 72 55 72 H115 Q140 72 140 92 V205 Q140 222 122 222 H48 Q30 222 30 205Z" fill="none" stroke="#1E2B45" stroke-width="3"/>
+ <rect x="44" y="128" width="82" height="66" rx="6" fill="#FFFCF6"/><text x="85" y="150" text-anchor="middle" font-family="El Messiri" font-size="15" font-weight="700" fill="#1E2B45">${APP_NAME} ${p.name}</text>
+ <text x="85" y="166" text-anchor="middle" font-family="Tajawal" font-size="7.5" fill="#5D6880">${p.parts.map(x=>farm(x.id).city).join('، ')}</text>
+ <text x="85" y="182" text-anchor="middle" font-family="Tajawal" font-size="7.5" fill="#5D6880">${ar(new Date().getFullYear())}</text>
+ <path d="M42 98 V200" stroke="#fff" stroke-width="5" opacity=".5" stroke-linecap="round"/></svg>`}
+function miniBottle(p){const id='mb'+p.code;return `<svg width="44" height="58" viewBox="0 0 54 70" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">${gradStops(p)}</linearGradient></defs><rect x="19" y="2" width="16" height="12" rx="2" fill="#1F7A52"/><path d="M10 20 Q10 16 16 16 H38 Q44 16 44 20 V60 Q44 66 38 66 H16 Q10 66 10 60Z" fill="url(#${id})" stroke="#1E2B45" stroke-width="2"/></svg>`}
+
+document.getElementById('partner-join').onclick=()=>toast('شكراً! بنتواصل معك لتسجيل مزرعتك');
+
+
+/* ===== Saudi illustrations ===== */
+function mabkhara(x,y,sc){return `<g transform="translate(${x},${y}) scale(${sc})">
+  <g class="smoke" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".8">
+   <path d="M0 -30 Q-10 -48 0 -62 T0 -96"/><path d="M8 -32 Q16 -50 6 -66 T12 -92" opacity=".7"/><path d="M-8 -32 Q-16 -52 -6 -70" opacity=".6"/></g>
+  <ellipse cx="0" cy="-26" rx="20" ry="5" fill="#E05A2B"/><ellipse cx="0" cy="-27" rx="12" ry="3" fill="#FFB347"/>
+  <path d="M-22 -26 H22 L18 -6 H-18Z" fill="#7A4A2A"/>
+  <g fill="#E8C98E"><circle cx="-12" cy="-16" r="2.4"/><circle cx="0" cy="-16" r="2.4"/><circle cx="12" cy="-16" r="2.4"/></g>
+  <path d="M-18 -6 H18 L12 8 H-12Z" fill="#5E3820"/><path d="M-6 8 H6 L10 24 H-10Z" fill="#7A4A2A"/>
+  <path d="M-22 24 H22 L26 32 H-26Z" fill="#5E3820"/><path d="M-22 -26 H22" stroke="#E8C98E" stroke-width="2"/></g>`}
+function roseBush(x,y,sc,c1,c2){return `<g transform="translate(${x},${y}) scale(${sc})"><ellipse cx="0" cy="0" rx="34" ry="20" fill="#3E7F52"/><ellipse cx="-14" cy="-6" rx="16" ry="12" fill="#4E9563"/>
+  ${[[-20,-10],[-4,-16],[14,-10],[24,0],[-26,4],[4,-2],[-10,6]].map(([a,b],i)=>`<g transform="translate(${a},${b})">${[0,72,144,216,288].map(r=>`<ellipse rx="5.5" ry="4" transform="rotate(${r+i*13}) translate(0 -4)" fill="${i%2?c1:c2}"/>`).join('')}<circle r="2" fill="#B13D5C"/></g>`).join('')}</g>`}
+SCENES['saudi-dawn']=id=>({vb:'0 0 250 560',s:`<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2A98E"/><stop offset=".4" stop-color="#F7CFA6"/><stop offset=".7" stop-color="#F9E2C2"/><stop offset="1" stop-color="#EBCB98"/></linearGradient><linearGradient id="d${id}" x1="0" y1="0" x2="0" y2="1"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#1E2B45" stop-opacity=".6"/></linearGradient></defs>
+  <rect width="250" height="560" fill="url(#g${id})"/><circle cx="125" cy="300" r="46" fill="#FFF1D8" opacity=".9"/>
+  <path d="M0 320 Q60 290 125 312 T250 300 V560 H0Z" fill="#E4C08A"/><path d="M0 360 Q90 330 170 350 T250 342 V560 H0Z" fill="#D9AE72"/>
+  <g transform="translate(125,322)"><path d="M-40 0 V-34 H40 V0Z" fill="#C9A06A"/><g fill="#C9A06A">${[-40,-28,-16,-4,8,20,32].map(x=>`<polygon points="${x},-34 ${x+4},-42 ${x+8},-34"/>`).join('')}</g><rect x="-6" y="-20" width="12" height="20" fill="#8A6440"/><polygon points="-30,-26 -27,-31 -24,-26" fill="#8A6440"/><polygon points="24,-26 27,-31 30,-26" fill="#8A6440"/></g>
+  ${palm(26,470,190,1.25)}${palm(62,450,150,1)}${palm(232,470,200,1.3)}${palm(196,452,140,.95)}
+  <path d="M0 420 Q125 395 250 420 V560 H0Z" fill="#4E9563"/>
+  ${roseBush(40,450,1.1,'#F09AB0','#E2607F')}${roseBush(210,446,1.15,'#EE8FA6','#E2607F')}${roseBush(95,492,1.3,'#F5B3C4','#E2607F')}${roseBush(170,498,1.35,'#F09AB0','#D94C6E')}${roseBush(20,520,1.4,'#E2607F','#F5B3C4')}${roseBush(236,526,1.4,'#F09AB0','#E2607F')}
+  ${mabkhara(196,392,1.2)}
+  <rect width="250" height="560" fill="url(#d${id})"/>`});
+function ornamentBand(){return `<svg viewBox="0 0 60 54"><path d="M30 54 Q32 30 28 12" stroke="#7A5A3A" stroke-width="3.5" fill="none"/>${[[-26,6],[-20,-8],[-4,-16],[12,-14],[24,-4],[22,8]].map(([dx,dy])=>`<path d="M28 12 Q${28+dx*0.6} ${12+dy-8} ${28+dx} ${12+dy+5}" stroke="#2E8B57" stroke-width="4" fill="none" stroke-linecap="round"/>`).join('')}<g fill="#B57A3C"><circle cx="24" cy="18" r="2.4"/><circle cx="32" cy="18" r="2.4"/><circle cx="28" cy="22" r="2.4"/></g></svg>
+  <svg viewBox="0 0 120 54">${roseBush(30,44,0.75,'#F09AB0','#E2607F')}${roseBush(88,44,0.75,'#EE8FA6','#D94C6E')}</svg>
+  <svg viewBox="0 0 60 70" style="height:62px">${mabkhara(30,36,0.9).replace('stroke="#fff"','stroke="#B9A48A"')}</svg>`}
+function palmDeco(){return `<path d="M50 120 Q54 70 46 34" stroke="#fff" stroke-width="6" fill="none"/>${[[-40,10],[-32,-12],[-8,-26],[18,-24],[38,-8],[36,12]].map(([dx,dy])=>`<path d="M46 34 Q${46+dx*0.6} ${34+dy-12} ${46+dx} ${34+dy+8}" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round"/>`).join('')}`}
+
+/* Optional official logos: place the official files next to index.html with these names
+   (only with permission from the hackathon organisers). Missing files are hidden automatically. */
+const LOGO_FILES=[['tdf-logo.png','شعار صندوق التنمية السياحي'],['ksa-logo.png','شعار المملكة العربية السعودية']];
+document.querySelectorAll('[data-logos]').forEach(box=>{
+  LOGO_FILES.forEach(([src,alt])=>{const im=new Image();im.alt=alt;im.onload=()=>box.appendChild(im);im.onerror=()=>{};im.src=src});
+});
+document.querySelectorAll('[data-ornament]').forEach(e=>e.innerHTML=ornamentBand());
+document.querySelectorAll('[data-palm]').forEach(e=>e.innerHTML=palmDeco());
+
+/* ===== Init ===== */
+document.querySelectorAll('.appname').forEach(e=>e.textContent=APP_NAME);
+document.querySelectorAll('#v-splash .appname').forEach(e=>e.classList.add('brand'));
+document.querySelectorAll('.tagline').forEach(e=>e.textContent=TAGLINE);
+document.title=`${APP_NAME} | ${TAGLINE}`;
+paintScenes();renderAiTags();
+</script>
+</body>
+</html>
