@@ -706,7 +706,7 @@ function bigBottle(p){const id='bb'+Date.now();return `<svg width="170" height="
  <rect x="72" y="46" width="26" height="26" fill="#E8C98E"/><path d="M30 92 Q30 72 55 72 H115 Q140 72 140 92 V205 Q140 222 122 222 H48 Q30 222 30 205Z" fill="#F7F2F2" opacity=".6"/>
  <g clip-path="url(#c${id})"><rect x="20" y="98" width="130" height="140" fill="url(#${id})" opacity=".85"/></g>
  <path d="M30 92 Q30 72 55 72 H115 Q140 72 140 92 V205 Q140 222 122 222 H48 Q30 222 30 205Z" fill="none" stroke="#1E2B45" stroke-width="3"/>
- <rect x="44" y="128" width="82" height="66" rx="6" fill="#FFFCF6"/><text x="85" y="150" text-anchor="middle" font-family="El Messiri" font-size="15" font-weight="700" fill="#1E2B45">${APP_NAME} ${p.name}</text>
+ <rect x="44" y="128" width="82" height="66" rx="6" fill="#FFFCF6"/><text x="85" y="150" text-anchor="middle" font-family="El Messiri" font-size="${Math.min(15,Math.floor(150/((APP_NAME+p.name).length+2)))}" font-weight="700" fill="#1E2B45">${APP_NAME} ${p.name}</text>
  <text x="85" y="166" text-anchor="middle" font-family="Tajawal" font-size="7.5" fill="#5D6880">${p.parts.map(x=>farm(x.id).city).join('، ')}</text>
  <text x="85" y="182" text-anchor="middle" font-family="Tajawal" font-size="7.5" fill="#5D6880">${ar(new Date().getFullYear())}</text>
  <path d="M42 98 V200" stroke="#fff" stroke-width="5" opacity=".5" stroke-linecap="round"/></svg>`}
