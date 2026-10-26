@@ -6,7 +6,7 @@
 
 **[▶ Try the live prototype](https://rawan0101.github.io/nadd/)**
 
-Built to develop tourism in the Kingdom of Saudi Arabia · Submitted to the Tourism Development Fund Hackathon
+Built to develop tourism in the Kingdom of Saudi Arabia 
 
 </div>
 
